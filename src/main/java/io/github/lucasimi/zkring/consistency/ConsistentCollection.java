@@ -1,7 +1,9 @@
-package io.github.lucasimi.zkring;
+package io.github.lucasimi.zkring.consistency;
 
 import java.util.Collection;
 import java.util.List;
+
+import io.github.lucasimi.zkring.Node;
 
 public interface ConsistentCollection {
     

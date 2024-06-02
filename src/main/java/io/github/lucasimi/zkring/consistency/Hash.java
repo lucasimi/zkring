@@ -1,8 +1,10 @@
-package io.github.lucasimi.zkring;
+package io.github.lucasimi.zkring.consistency;
 
 import java.io.Serializable;
 
 import org.apache.commons.codec.digest.MurmurHash3;
+
+import io.github.lucasimi.zkring.Utils;
 
 public interface Hash {
 

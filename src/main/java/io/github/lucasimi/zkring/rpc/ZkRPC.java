@@ -1,9 +1,13 @@
-package io.github.lucasimi.zkring;
+package io.github.lucasimi.zkring.rpc;
 
 import java.util.Optional;
 
 import org.zeromq.SocketType;
 import org.zeromq.ZMQ;
+
+import io.github.lucasimi.zkring.Node;
+import io.github.lucasimi.zkring.consistency.ConsistentCollection;
+import io.github.lucasimi.zkring.discovery.RingDiscovery;
 
 public class ZkRPC {
 

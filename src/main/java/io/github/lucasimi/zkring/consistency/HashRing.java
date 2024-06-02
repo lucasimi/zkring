@@ -1,4 +1,4 @@
-package io.github.lucasimi.zkring;
+package io.github.lucasimi.zkring.consistency;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,6 +12,9 @@ import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import io.github.lucasimi.zkring.Node;
+import io.github.lucasimi.zkring.VNode;
 
 public class HashRing implements ConsistentCollection {
 

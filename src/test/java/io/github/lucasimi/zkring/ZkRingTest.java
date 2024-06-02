@@ -16,6 +16,8 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.github.lucasimi.zkring.discovery.ZkRing;
+
 public class ZkRingTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ZkRingTest.class);

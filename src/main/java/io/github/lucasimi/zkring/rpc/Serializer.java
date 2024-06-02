@@ -1,4 +1,4 @@
-package io.github.lucasimi.zkring;
+package io.github.lucasimi.zkring.rpc;
 
 public interface Serializer<S> {
 

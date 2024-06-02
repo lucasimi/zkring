@@ -1,6 +1,8 @@
-package io.github.lucasimi.zkring;
+package io.github.lucasimi.zkring.discovery;
 
 import java.util.Optional;
+
+import io.github.lucasimi.zkring.consistency.ConsistentCollection;
 
 public interface RingDiscovery {
 

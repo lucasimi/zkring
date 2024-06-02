@@ -2,6 +2,9 @@ package io.github.lucasimi.zkring;
 
 import org.junit.jupiter.api.Test;
 
+import io.github.lucasimi.zkring.consistency.Hash;
+import io.github.lucasimi.zkring.consistency.HashRing;
+
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

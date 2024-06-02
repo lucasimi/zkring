@@ -1,4 +1,4 @@
-package io.github.lucasimi.zkring;
+package io.github.lucasimi.zkring.discovery;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,6 +17,12 @@ import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.ZooKeeper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.github.lucasimi.zkring.Node;
+import io.github.lucasimi.zkring.Utils;
+import io.github.lucasimi.zkring.consistency.ConsistentCollection;
+import io.github.lucasimi.zkring.consistency.Hash;
+import io.github.lucasimi.zkring.consistency.HashRing;
 
 public class ZkRing implements RingDiscovery, AutoCloseable {
  
