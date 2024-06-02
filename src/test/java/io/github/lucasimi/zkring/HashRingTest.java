@@ -2,8 +2,8 @@ package io.github.lucasimi.zkring;
 
 import org.junit.jupiter.api.Test;
 
-import io.github.lucasimi.zkring.consistency.Hash;
-import io.github.lucasimi.zkring.consistency.HashRing;
+import io.github.lucasimi.zkring.collection.Hash;
+import io.github.lucasimi.zkring.collection.HashRing;
 
 import java.util.*;
 

@@ -1,4 +1,4 @@
-package io.github.lucasimi.zkring.consistency;
+package io.github.lucasimi.zkring.collection;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,7 +16,7 @@ import java.util.stream.IntStream;
 import io.github.lucasimi.zkring.Node;
 import io.github.lucasimi.zkring.VNode;
 
-public class HashRing implements ConsistentCollection {
+public class HashRing implements Ring {
 
     private final int partitions;
 

@@ -20,13 +20,13 @@ import org.slf4j.LoggerFactory;
 
 import io.github.lucasimi.zkring.Node;
 import io.github.lucasimi.zkring.Utils;
-import io.github.lucasimi.zkring.consistency.ConsistentCollection;
-import io.github.lucasimi.zkring.consistency.Hash;
-import io.github.lucasimi.zkring.consistency.HashRing;
+import io.github.lucasimi.zkring.collection.Hash;
+import io.github.lucasimi.zkring.collection.HashRing;
+import io.github.lucasimi.zkring.collection.Ring;
 
-public class ZkRing implements RingDiscovery, AutoCloseable {
+public class ZKDiscovery implements Discovery, AutoCloseable {
  
-    private static final Logger LOGGER = LoggerFactory.getLogger(ZkRing.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ZKDiscovery.class);
 
     private final String connectString;
 
@@ -40,7 +40,7 @@ public class ZkRing implements RingDiscovery, AutoCloseable {
 
     private final Hash hash;
 
-    private final Map<String, ConsistentCollection> rings = new HashMap<>();
+    private final Map<String, Ring> rings = new HashMap<>();
 
     private ZooKeeper zk;
 
@@ -135,8 +135,8 @@ public class ZkRing implements RingDiscovery, AutoCloseable {
             return this;
         }
 
-        public ZkRing build() {
-            return new ZkRing(this);
+        public ZKDiscovery build() {
+            return new ZKDiscovery(this);
         }
 
     }
@@ -145,7 +145,7 @@ public class ZkRing implements RingDiscovery, AutoCloseable {
         return new Builder();
     }
 
-    private ZkRing(Builder builder) {
+    private ZKDiscovery(Builder builder) {
         this.connectString = builder.connectString;
         this.sessionTimeout = builder.sessionTimeout;
         this.identity = builder.identity;
@@ -188,7 +188,7 @@ public class ZkRing implements RingDiscovery, AutoCloseable {
     }
 
     @Override
-    public Optional<ConsistentCollection> getRing(String ringId) {
+    public Optional<Ring> getRing(String ringId) {
         return Optional.ofNullable(this.rings.get(ringId));
     }
 
@@ -207,7 +207,7 @@ public class ZkRing implements RingDiscovery, AutoCloseable {
 
     public int size(String ringId) {
         return Optional.ofNullable(this.rings.get(ringId))
-            .map(ConsistentCollection::size)
+            .map(Ring::size)
             .orElse(0);
     }
 

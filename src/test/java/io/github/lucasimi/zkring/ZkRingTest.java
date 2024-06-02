@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.github.lucasimi.zkring.discovery.ZkRing;
+import io.github.lucasimi.zkring.discovery.ZKDiscovery;
 
 public class ZkRingTest {
 
@@ -72,7 +72,7 @@ public class ZkRingTest {
         int sessionTimeout = 10_000;
 
         Node id1 = new Node(UUID.randomUUID(), "node1", 1);
-        ZkRing zkDisc1 = ZkRing.newBuilder()
+        ZKDiscovery zkDisc1 = ZKDiscovery.newBuilder()
                 .withConnectString(connectString)
                 .withSessionTimeout(sessionTimeout)
                 .withIdentity(id1)
@@ -87,7 +87,7 @@ public class ZkRingTest {
         Thread.sleep(2_000);
 
         Node id2 = new Node(UUID.randomUUID(), "node2", 2);
-        ZkRing zkDisc2 = ZkRing.newBuilder()
+        ZKDiscovery zkDisc2 = ZKDiscovery.newBuilder()
                 .withConnectString(connectString)
                 .withSessionTimeout(sessionTimeout)
                 .withIdentity(id2)
@@ -99,7 +99,7 @@ public class ZkRingTest {
         Thread.sleep(2_000);
 
         Node id3 = new Node(UUID.randomUUID(), "node3", 3);
-        ZkRing zkDisc3 = ZkRing.newBuilder()
+        ZKDiscovery zkDisc3 = ZKDiscovery.newBuilder()
                 .withConnectString(connectString)
                 .withSessionTimeout(sessionTimeout)
                 .withIdentity(id3)

@@ -1,11 +1,11 @@
-package io.github.lucasimi.zkring.consistency;
+package io.github.lucasimi.zkring.collection;
 
 import java.util.Collection;
 import java.util.List;
 
 import io.github.lucasimi.zkring.Node;
 
-public interface ConsistentCollection {
+public interface Ring {
     
     void add(Node node);
 

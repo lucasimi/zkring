@@ -1,4 +1,4 @@
-package io.github.lucasimi.zkring.consistency;
+package io.github.lucasimi.zkring.collection;
 
 import java.io.Serializable;
 

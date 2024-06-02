@@ -6,21 +6,22 @@ import org.zeromq.SocketType;
 import org.zeromq.ZMQ;
 
 import io.github.lucasimi.zkring.Node;
-import io.github.lucasimi.zkring.consistency.ConsistentCollection;
-import io.github.lucasimi.zkring.discovery.RingDiscovery;
+import io.github.lucasimi.zkring.collection.Ring;
+import io.github.lucasimi.zkring.discovery.Discovery;
 
-public class ZkRPC {
+public class ZMQRPC implements RPC {
 
-    private RingDiscovery ringDiscovery;
+    private Discovery ringDiscovery;
 
     private ZMQ.Context context;
 
-    public ZkRPC() {
+    public ZMQRPC() {
         context = ZMQ.context(1);
     }
 
+    @Override
     public <S, T> Optional<T> get(String ringId, S request, SerDes<S, T> serdes) {
-        Optional<ConsistentCollection> ring = ringDiscovery.getRing(ringId);
+        Optional<Ring> ring = ringDiscovery.getRing(ringId);
         Optional<Node> node = ring
             .map(r -> r.get(request));
         if (node.isEmpty()) {
