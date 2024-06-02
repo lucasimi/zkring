@@ -6,8 +6,8 @@ import org.zeromq.SocketType;
 import org.zeromq.ZMQ;
 
 import io.github.lucasimi.zkring.Node;
-import io.github.lucasimi.zkring.collection.Ring;
 import io.github.lucasimi.zkring.discovery.Discovery;
+import io.github.lucasimi.zkring.ring.Ring;
 
 public class ZMQRPC implements RPC {
 

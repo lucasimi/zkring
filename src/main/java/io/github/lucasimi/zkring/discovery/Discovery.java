@@ -2,7 +2,7 @@ package io.github.lucasimi.zkring.discovery;
 
 import java.util.Optional;
 
-import io.github.lucasimi.zkring.collection.Ring;
+import io.github.lucasimi.zkring.ring.Ring;
 
 public interface Discovery {
 

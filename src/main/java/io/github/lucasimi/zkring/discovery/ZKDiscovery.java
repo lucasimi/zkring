@@ -20,9 +20,9 @@ import org.slf4j.LoggerFactory;
 
 import io.github.lucasimi.zkring.Node;
 import io.github.lucasimi.zkring.Utils;
-import io.github.lucasimi.zkring.collection.Hash;
-import io.github.lucasimi.zkring.collection.HashRing;
-import io.github.lucasimi.zkring.collection.Ring;
+import io.github.lucasimi.zkring.ring.Hash;
+import io.github.lucasimi.zkring.ring.HashRing;
+import io.github.lucasimi.zkring.ring.Ring;
 
 public class ZKDiscovery implements Discovery, AutoCloseable {
  

@@ -1,4 +1,4 @@
-package io.github.lucasimi.zkring;
+package io.github.lucasimi.zkring.discovery;
 
 import java.io.File;
 import java.net.InetSocketAddress;
@@ -16,11 +16,11 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.github.lucasimi.zkring.discovery.ZKDiscovery;
+import io.github.lucasimi.zkring.Node;
 
-public class ZkRingTest {
+public class ZKDiscoveryTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ZkRingTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ZKDiscoveryTest.class);
 
     private static final boolean zkEmbedded = true;
 

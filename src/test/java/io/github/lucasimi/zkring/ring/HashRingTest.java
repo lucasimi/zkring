@@ -1,9 +1,9 @@
-package io.github.lucasimi.zkring;
+package io.github.lucasimi.zkring.ring;
 
 import org.junit.jupiter.api.Test;
 
-import io.github.lucasimi.zkring.collection.Hash;
-import io.github.lucasimi.zkring.collection.HashRing;
+import io.github.lucasimi.zkring.Node;
+import io.github.lucasimi.zkring.VNode;
 
 import java.util.*;
 

@@ -1,4 +1,4 @@
-package io.github.lucasimi.zkring.collection;
+package io.github.lucasimi.zkring.ring;
 
 import java.util.Collection;
 import java.util.List;
