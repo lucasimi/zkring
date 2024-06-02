@@ -18,7 +18,7 @@ import org.apache.zookeeper.ZooKeeper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ZkRing {
+public class ZkRing implements RingDiscovery, AutoCloseable {
  
     private static final Logger LOGGER = LoggerFactory.getLogger(ZkRing.class);
 
@@ -34,7 +34,7 @@ public class ZkRing {
 
     private final Hash hash;
 
-    private final Map<String, HashRing> rings = new HashMap<>();
+    private final Map<String, ConsistentCollection> rings = new HashMap<>();
 
     private ZooKeeper zk;
 
@@ -148,6 +148,7 @@ public class ZkRing {
         this.hash = builder.hash;
     }
 
+    @Override
     public void subscribe(String ringId) {
         try {
             this.zk = new ZooKeeper(connectString, sessionTimeout, null);
@@ -167,6 +168,7 @@ public class ZkRing {
         }
     }
 
+    @Override
     public void unsubscribe(String ringId) {
         String peerPath = getPath(ringId, identity);
         UUID uuid = identity.uuid();
@@ -179,6 +181,12 @@ public class ZkRing {
         }
     }
 
+    @Override
+    public Optional<ConsistentCollection> getRing(String ringId) {
+        return Optional.ofNullable(this.rings.get(ringId));
+    }
+
+    @Override
     public void close() {
         try {
             this.rings.keySet().forEach(this::unsubscribe);
@@ -193,7 +201,7 @@ public class ZkRing {
 
     public int size(String ringId) {
         return Optional.ofNullable(this.rings.get(ringId))
-            .map(HashRing::size)
+            .map(ConsistentCollection::size)
             .orElse(0);
     }
 

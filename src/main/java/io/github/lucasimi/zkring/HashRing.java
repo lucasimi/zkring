@@ -13,7 +13,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class HashRing {
+public class HashRing implements ConsistentCollection {
 
     private final int partitions;
 
@@ -29,33 +29,40 @@ public class HashRing {
         this.hash = hash;
     }
 
+    @Override
     public void add(Node peer) {
         this.addAll(Collections.singletonList(peer));
     }
 
+    @Override
     public void clear() {
         this.vnodes.clear();
     }
 
+    @Override
     public void remove(Node peer) {
         this.removeAll(Collections.singletonList(peer));
     }
 
+    @Override
     public void addAll(Collection<Node> peers) {
         Map<Integer, VNode> toAdd = getVNodes(peers);
         this.vnodes.putAll(toAdd);
     }
 
+    @Override
     public void removeAll(Collection<Node> peers) {
         Map<Integer, VNode> toRemove = getVNodes(peers);
         toRemove.keySet().forEach(vnodes::remove);
     }
 
-    public <S> Node getNode(S obj) {
-        return getNodes(obj, 1).getFirst();
+    @Override
+    public <S> Node get(S obj) {
+        return get(obj, 1).getFirst();
     }
 
-    public <S> List<Node> getNodes(S obj, int num) {
+    @Override
+    public <S> List<Node> get(S obj, int num) {
         List<Node> peers = new ArrayList<>(num);
         Optional<VNode> vnodeOp = next(obj);
         vnodeOp.map(VNode::node).ifPresent(peers::add);
@@ -66,6 +73,7 @@ public class HashRing {
         return peers;
     }
 
+    @Override
     public int size() {
         return this.vnodes.size();
     }
