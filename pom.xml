@@ -29,9 +29,19 @@
       <version>3.9.1</version>
     </dependency>
     <dependency>
-      <groupId>org.zeromq</groupId>
-      <artifactId>jeromq</artifactId>
-      <version>0.5.2</version>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-core</artifactId>
+      <version>4.3.4</version>
+    </dependency>
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-web</artifactId>
+      <version>4.3.4</version>
+    </dependency>
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-web-client</artifactId>
+      <version>4.3.4</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
