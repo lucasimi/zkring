@@ -7,8 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 import org.apache.zookeeper.AsyncCallback;
+import org.apache.zookeeper.AsyncCallback.ChildrenCallback;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.WatchedEvent;
@@ -20,31 +22,19 @@ import org.slf4j.LoggerFactory;
 
 import io.github.lucasimi.zkring.Node;
 import io.github.lucasimi.zkring.Utils;
-import io.github.lucasimi.zkring.ring.Hash;
-import io.github.lucasimi.zkring.ring.HashRing;
 import io.github.lucasimi.zkring.ring.Ring;
 
 public class ZKDiscovery implements Discovery, AutoCloseable {
  
     private static final Logger LOGGER = LoggerFactory.getLogger(ZKDiscovery.class);
 
-    private final String connectString;
-
-    private final int sessionTimeout;
-
     private final Node identity;
-
-    private final int partitions;
-
-    private final int replication;
-
-    private final Hash hash;
 
     private final Map<String, Ring> rings = new HashMap<>();
 
-    private ZooKeeper zk;
+    private final ZooKeeper zk;
 
-    private AsyncCallback.ChildrenCallback childrenCallback(String ringId) {
+    private AsyncCallback.ChildrenCallback childrenCallback(String ringId, Supplier<Ring> ringSupplier) {
         return new AsyncCallback.ChildrenCallback() {
        
             @Override
@@ -68,15 +58,16 @@ public class ZKDiscovery implements Discovery, AutoCloseable {
                     }
                 }
                 LOGGER.info("Updating ring {} with {} peers", ringId, children.size());
-                HashRing hashRing = new HashRing(partitions, replication, hash);
-                hashRing.addAll(peers);
-                rings.put(ringId, hashRing);
+                Ring ring = ringSupplier.get();
+                ring.clear();
+                ring.addAll(peers);
+                rings.put(ringId, ring);
             }
             
         };
     }
 
-    private Watcher childrenWatcher(String ringId) {
+    private Watcher childrenWatcher(String ringId, Supplier<Ring> ringSupplier) {
         return new Watcher() {
 
             @Override
@@ -84,7 +75,7 @@ public class ZKDiscovery implements Discovery, AutoCloseable {
                 if (watchedEvent.getType() == Event.EventType.NodeChildrenChanged) {
                     String path = watchedEvent.getPath();
                     LOGGER.info("Peers changed for service {}", path.substring(1));
-                    zk.getChildren(path, this, childrenCallback(ringId), null);
+                    zk.getChildren(path, this, childrenCallback(ringId, ringSupplier), null);
                 }
             }
 
@@ -98,12 +89,6 @@ public class ZKDiscovery implements Discovery, AutoCloseable {
         private int sessionTimeout = 10_000;
 
         private Node identity;
-
-        private Hash hash = new Hash.Default();
-
-        private int partitions = 1;
-
-        private int replication = 1;
 
         public Builder withConnectString(String connectString) {
             this.connectString = connectString;
@@ -120,22 +105,7 @@ public class ZKDiscovery implements Discovery, AutoCloseable {
             return this;
         }
 
-        public Builder withHash(Hash hash) {
-            this.hash = hash;
-            return this;
-        }
-
-        public Builder withPartitions(int partitions) {
-            this.partitions = partitions;
-            return this;
-        }
-
-        public Builder withReplication(int replication) {
-            this.replication = replication;
-            return this;
-        }
-
-        public ZKDiscovery build() {
+        public ZKDiscovery build() throws IOException {
             return new ZKDiscovery(this);
         }
 
@@ -145,30 +115,27 @@ public class ZKDiscovery implements Discovery, AutoCloseable {
         return new Builder();
     }
 
-    private ZKDiscovery(Builder builder) {
-        this.connectString = builder.connectString;
-        this.sessionTimeout = builder.sessionTimeout;
+    private ZKDiscovery(Builder builder) throws IOException {
         this.identity = builder.identity;
-        this.partitions = builder.partitions;
-        this.replication = builder.replication;
-        this.hash = builder.hash;
+        this.zk = new ZooKeeper(builder.connectString, builder.sessionTimeout, null);
     }
 
     @Override
-    public void subscribe(String ringId) {
+    public void subscribe(String ringId, Supplier<Ring> ringSupplier) {
         try {
-            this.zk = new ZooKeeper(connectString, sessionTimeout, null);
             String servicePath = getPath(ringId);
             if (zk.exists(servicePath, null) == null) {
                 zk.create(servicePath, null, ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
                 LOGGER.info("Registered new ring: {}", ringId);
             }
-            zk.getChildren(servicePath, childrenWatcher(ringId), childrenCallback(ringId), null);
+            Watcher watcher = childrenWatcher(ringId, ringSupplier);
+            ChildrenCallback callback = childrenCallback(ringId, ringSupplier);
+            zk.getChildren(servicePath, watcher, callback, null);
             String peerPath = getPath(ringId, identity);
             byte[] serialized = Utils.serialize(identity);
             zk.create(peerPath, serialized, ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL);
             LOGGER.info("Subscribed to {}", ringId);
-        } catch (IOException | InterruptedException | KeeperException e) {
+        } catch (InterruptedException | KeeperException e) {
             LOGGER.error("Unable to subscribe to {}", ringId, e);
             throw new RuntimeException(e);
         }

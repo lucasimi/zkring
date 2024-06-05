@@ -1,6 +1,7 @@
 package io.github.lucasimi.zkring.discovery;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.file.Paths;
 import java.time.Duration;
@@ -17,6 +18,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.github.lucasimi.zkring.Node;
+import io.github.lucasimi.zkring.ring.Hash;
+import io.github.lucasimi.zkring.ring.HashRing;
 
 public class ZKDiscoveryTest {
 
@@ -65,7 +68,7 @@ public class ZKDiscoveryTest {
     }
 
     @Test
-    public void testZK() throws InterruptedException {
+    public void testZK() throws InterruptedException, IOException {
         String ringId1 = "ring1";
         String ringId2 = "ring2";
         String connectString = "localhost:2181";
@@ -76,9 +79,8 @@ public class ZKDiscoveryTest {
                 .withConnectString(connectString)
                 .withSessionTimeout(sessionTimeout)
                 .withIdentity(id1)
-                .withPartitions(10)
                 .build();
-        zkDisc1.subscribe(ringId1);
+        zkDisc1.subscribe(ringId1, () -> new HashRing(10, 1, new Hash.Default()));
         Awaitility.await()
                 .atMost(Duration.ofSeconds(2))
                 .until(() -> zkDisc1.size(ringId1) == 1);
@@ -91,9 +93,8 @@ public class ZKDiscoveryTest {
                 .withConnectString(connectString)
                 .withSessionTimeout(sessionTimeout)
                 .withIdentity(id2)
-                .withPartitions(10)
                 .build();
-        zkDisc2.subscribe(ringId1);
+        zkDisc2.subscribe(ringId1, () -> new HashRing(10, 1, new Hash.Default()));
 
         LOGGER.info("SUB 2");
         Thread.sleep(2_000);
@@ -103,9 +104,8 @@ public class ZKDiscoveryTest {
                 .withConnectString(connectString)
                 .withSessionTimeout(sessionTimeout)
                 .withIdentity(id3)
-                .withPartitions(10)
                 .build();
-        zkDisc3.subscribe(ringId2);
+        zkDisc3.subscribe(ringId2, () -> new HashRing(10, 1, new Hash.Default()));
 
         LOGGER.info("SUB 3");
         Thread.sleep(2_000);
